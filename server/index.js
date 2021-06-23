@@ -1,38 +1,53 @@
 const { ApolloServer, gql } = require("apollo-server");
+const { mainCards, animals, categories } = require("./database/db");
 
 const typeDefs = gql`
-  type Book {
-    title: String
-    author: String
-  }
-
   type MainCard {
     title: String!
     image: String!
   }
 
+  type Animal {
+    id: ID!
+    image: String!
+    title: String!
+    rating: Float
+    price: String!
+    description: [String!]!
+    slug: String!
+    stock: Int!
+    onSale: Boolean
+  }
+
+  type Category {
+    id: ID!
+    image: String!
+    category: String!
+    slug: String!
+  }
+
   type Query {
-    books: [Book]
     mainCards: [MainCard]
+    animals: [Animal!]!
+    categories: [Category!]!
+    animal(slug: String!): Animal
+    category(slug: String!): Category
   }
 `;
 
-const books = [
-  { title: "test1", author: "testName1" },
-  { title: "test2", author: "testName2" },
-  { title: "test3", author: "testName3" },
-];
-
-const mainCards = [
-  { title: "card1", image: "lion" },
-  { title: "card2", image: "penguin" },
-  { title: "card3", image: "cat" },
-];
-
 const resolvers = {
   Query: {
-    books: () => books,
     mainCards: () => mainCards,
+    animals: () => animals,
+    categories: () => categories,
+    animal: (parent, args, ctx) => {
+      let animal = animals.find((animal) => (animal.slug = args.slug));
+      return animal;
+    },
+    category: (parent, args, ctx) => {
+      let category = categories.find((cate) => (cate.slug = args.slug));
+      return category;
+    },
   },
 };
 
