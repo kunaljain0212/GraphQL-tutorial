@@ -1,7 +1,5 @@
-const { animals } = require("../database/db");
-
 const Category = {
-  animals: (parent, args, ctx) => {
+  animals: (parent, args, { animals }) => {
     const data = animals.filter((animal) => animal.category === parent.id);
     return data;
   },
